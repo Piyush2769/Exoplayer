@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -33,15 +34,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         exoPlayerView=findViewById(R.id.exoplayerview);
-        BandwidthMeter bandwidthMeter=new DefaultBandwidthMeter();
-        TrackSelector trackSelector=new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-        exoPlayer= ExoPlayerFactory.newSimpleInstance(this,trackSelector);
 
-        Uri videoUri=Uri.parse(videoUrl);
+        try {
 
-        DefaultHttpDataSourceFactory dataSource=new DefaultHttpDataSourceFactory("exoplayer_video");
-        ExtractorsFactory extractorsFactory=new DefaultExtractorsFactory();
-        MediaSource videoSource=new ExtractorMediaSource(videoUri,dataSource,extractorsFactory,null,null);
+
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+            exoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+
+            Uri videoUri = Uri.parse(videoUrl);
+
+            DefaultHttpDataSourceFactory dataSource = new DefaultHttpDataSourceFactory("exoplayer_video");
+            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+            MediaSource videoSource = new ExtractorMediaSource(videoUri, dataSource, extractorsFactory, null, null);
+
+            exoPlayerView.setPlayer(exoPlayer);
+            exoPlayer.prepare(videoSource);
+            exoPlayer.setPlayWhenReady(true);
+        }
+        catch (Exception e)
+        {
+            Log.e("Main Activity","Error"+e.toString());
+        }
 
 
     }
